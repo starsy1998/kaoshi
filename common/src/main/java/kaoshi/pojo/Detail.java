@@ -5,7 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
-
+//测试注释
 public class Detail implements Serializable {
 
     private Integer id; //帖子编号
