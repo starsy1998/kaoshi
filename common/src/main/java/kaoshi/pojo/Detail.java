@@ -8,7 +8,7 @@ import java.util.Date;
 //测试注释
 //再次测试
 //11111
-//这是分支1
+//这是分支2
 public class Detail implements Serializable {
 
     private Integer id; //帖子编号
