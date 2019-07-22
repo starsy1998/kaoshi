@@ -1,0 +1,10 @@
+server:
+  port: 8082
+
+spring:
+  dubbo:
+    scan: kaoshi.controller
+    application:
+      name: addressbook-consumer
+    registry:
+      address: zookeeper://192.168.233.128:2181

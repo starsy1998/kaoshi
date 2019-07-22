@@ -1,0 +1,23 @@
+server:
+  port: 8081
+
+mybatis:
+  mapper-locations: classpath:mapper/*DetailMapper.xml
+  type-aliases-package: kaoshi.pojo
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3307/forum
+    username: root
+    password: root
+
+  dubbo:
+    scan: kaoshi.service
+    application:
+      name: addressbook-provider
+    registry:
+      address: zookeeper://192.168.233.128:2181
+    protocol:
+      name: dubbo
+      port: 20883
+

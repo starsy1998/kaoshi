@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="text-align: center">
+    讨论版区
+    <select id="sortId" name="sortId">
+        <option value="0" selected="selected">全部</option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" id="detail_btn">搜索</button>
+    <button onclick="javascript:location='detailadd.html'">发帖</button>
+</div>
+<div>
+    <table width="500" style="margin: auto">
+        <thead>
+            <tr>
+                <td>帖子ID</td>
+                <td>标题</td>
+                <td>作者</td>
+                <td>发布时间</td>
+                <td>回复次数</td>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+</div>
+<script src="js/jquery-1.12.4.js"></script>
+<script>
+    $("thead>tr").css("background","#fbdd68");
+    //显示全部帖子
+    $(function () {
+       //当sortId传入0时，查询全部
+       $.getJSON("/selectDetailBySortId.json",{"sortId":0},function (data) {
+           for (var i in data){
+               var detail = data[i];
+               $("tbody").append("<tr><td>"+detail.id+"</td><td>"+detail.title+"</td><td>"+detail.author+"</td><td>"+detail.createDate+"</td><td>"+detail.replyCount+"</td></tr>")
+           }
+           $("tbody tr:odd").css("background","#b78afb");
+       });
+
+       //显示下拉框
+        $.getJSON("/selctAllSort.json","",function (data) {
+            for (var i in data){
+                var sort = data[i];
+                $("#sortId").append("<option value='"+sort.id+"'>"+sort.name+"</option>");
+            }
+        });
+    });
+    //根据分类Id搜索
+    $("#detail_btn").click(function () {
+        //获得下拉框的值
+        var sortId = $("#sortId").val();
+        $.ajax({
+            url:"selectDetailBySortId.json",
+            type:"post",
+            data:{"sortId":sortId},
+            dataType:"json",
+            success:function (data) {
+                //清空
+                $("tbody").empty();
+                for (var i in data){
+                    var detail = data[i];
+                    $("tbody").append("<tr><td>"+detail.id+"</td><td>"+detail.title+"</td><td>"+detail.author+"</td><td>"+detail.createDate+"</td><td>"+detail.replyCount+"</td></tr>")
+                }
+                //隔行变色
+                $("tbody tr:odd").css("background","#b78afb");
+            },
+            error:function () {
+                alert("加载失败");
+            }
+        });
+    });
+
+</script>
+</body>
+
+</html>

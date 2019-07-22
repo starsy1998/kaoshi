@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form>
+        <table width="450" style="margin: auto" border="1">
+           <tr>
+               <th style="background-color: #fbdd68" colspan="2">发布新帖</th>
+           </tr>
+            <tr>
+                <td>发布版区</td>
+                <td><select id="sortId" name="sortId"></select></td>
+            </tr>
+            <tr>
+                <td>作者</td>
+                <td><input type="text" id="author" name="author"/></td>
+            </tr>
+            <tr>
+                <td>标题</td>
+                <td><input type="text" id="title" name="title"/><span id="msg"></span></td>
+            </tr>
+            <tr>
+                <td>详细内容</td>
+                <td><textarea id="detail" name="detail"></textarea></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center"><button type="button" id="add_btn">提交</button>&nbsp;<button type="button" onclick="javascript:history.go(-1)">返回</button></td>
+            </tr>
+        </table>
+    </form>
+<script src="js/jquery-1.12.4.js"></script>
+<script>
+    //显示下拉框
+    $(function () {
+        $.getJSON("/selctAllSort.json","",function (data) {
+            for (var i in data){
+                var sort = data[i];
+                $("#sortId").append("<option value='"+sort.id+"'>"+sort.name+"</option>");
+            }
+        });
+    });
+    //失去焦点，验证标题是否重复
+    $("#title").blur(function () {
+        $.ajax({
+           url:"/selectDetailByTitle.do",
+           success:function (data) {
+               if (data==1){
+                   $("#msg").text("标题已存在，请重新输入");
+               } else {
+                   $("#msg").text("标题可用");
+               }
+           },
+           error:function () {
+               alert("失败");
+           }
+        });
+    });
+    //提交
+    $("#add_btn").click(function () {
+       if (!$("#author").val()) {
+           alert("作者不能为空");
+           return;
+       }
+       if (!$("#title").val()){
+           alert("标题不能为空");
+           return;
+       }
+        if (!$("#detail").val()){
+            alert("详细内容不能为空");
+            return;
+        }
+       if ( $("#msg").text()!="标题可用") {
+           alert("标题已存在，请重新输入");
+           return;
+       }
+       //序列化表单
+       var param = $("form").serialize();
+       //添加帖子
+       $.post("/addDetail.do",param,function (data) {
+           if (data>0){
+               alert("添加成功！");
+               location="detaillist.html";
+           } else {
+               alert("添加失败");
+           }
+       });
+    });
+</script>
+</body>
+</html>
